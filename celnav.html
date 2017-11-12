@@ -3,7 +3,7 @@
 
 <head>
     <title>Celestial navigation using Google Maps</title>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARFyrT9del1UPyflzCvtezL1vp--zopv4&callback=init_map&libraries=geometry" async defer></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=PUT_YOUR_GOOGLE_MAPS_API_KEY_HERE&callback=init_map&libraries=geometry" async defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 
@@ -16,96 +16,17 @@
     </center>
 
     <script>
-        var map;
-        var ship_lat, ship_lng;
-        var ap_lat, ap_lng;
-        var theta, alt;
-        var run_once = false;
-        var lop_color = 'yellow';
-
-
-
-        function tonm(meter) {
-            return (meter / 1852.0);
-        }
-
-        function torad(deg) {
-            return (deg * Math.PI / 180.0);
-        }
-
-        function todeg(rad) {
-            return (rad * 180.0 / Math.PI);
-        }
-
-        function distance(lat1, lng1, lat2, lng2) {
-            return (tonm(google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(lat1, lng1), new google.maps.LatLng(lat2, lng2))));
-        }
-
-        /*
-        function lines_intersect(line1_point1, line1_point2, line2_point1, line2_point2) {
-            var proj = map.getProjection();
-            var line1_p1 = proj.fromLatLngToPoint(line1_point1);
-            var line1_p2 = proj.fromLatLngToPoint(line1_point2);
-            var line2_p1 = proj.fromLatLngToPoint(line2_point1);
-            var line2_p2 = proj.fromLatLngToPoint(line2_point2);
-            var x1, y1, x2, y2, x3, y3, x4, y4, d, xint, yint;
-
-            x1 = line1_p1.x;
-            y1 = line1_p1.y;
-            x2 = line1_p2.x;
-            y2 = line1_p2.y;
-
-            x3 = line2_p1.x;
-            y3 = line2_p1.y;
-            x4 = line2_p2.x;
-            y4 = line2_p2.y;
-
-            var d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-            if (Math.abs(d) < 1.0e-3)
-                return (null);
-            var xint = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
-            var yint = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
-
-            return ({
-                x: xint,
-                y: yint
-            });
-
-        }
-        */
+        var map;                    // Google Map map instance
+        var run_once = false;       // for internal map loading logic
+        var lop_color = 'yellow';   // default drawing color
+        var theta, alt;             // internals
         
-        function lines_intersect(line1_point1, line1_point2, line2_point1, line2_point2) {
-            var proj = map.getProjection();
-            var line1_p1 = line1_point1;
-            var line1_p2 = line1_point2;
-            var line2_p1 = line2_point1;
-            var line2_p2 = line2_point2;
-            var x1, y1, x2, y2, x3, y3, x4, y4, d, xint, yint;
-           
-            x1 = line1_p1.lat();
-            y1 = line1_p1.lng();
-            x2 = line1_p2.lat();
-            y2 = line1_p2.lng();
-
-            x3 = line2_p1.lat();
-            y3 = line2_p1.lng();
-            x4 = line2_p2.lat();
-            y4 = line2_p2.lng();
-
-            var d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-            if (Math.abs(d) < 1.0e-3)
-                return (null);
-            var xint = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
-            var yint = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
-
-            return ({
-                x: xint,
-                y: yint
-            });
-
-        }
-
-        function init_map() {
+        var ship_lat, ship_lng;     // position of the ship
+        var ap_lat, ap_lng;         // position of the AP
+        
+        
+        // callback in the long <script ...> line above, to get the basic Google map up and running
+         function init_map() {
             map = new google.maps.Map(document.getElementById('map'), {
                 center: {
                     lat: 27,
@@ -137,8 +58,13 @@
      
 
         }
+       
+       
 
-
+      
+       
+        // all of the celnav calculations are in the function start(), as called in the init_map() function,
+        // to only start drawing any celnav graphics (ship, sun, LOPs, etc.) only after the map has been loaded.
         function start() {
             function draw_ship() {
                 new google.maps.Marker({
@@ -371,7 +297,23 @@
                 });
                 arrow.setMap(map);
             }
+            
+              // a few useful conversion functions
+            function tonm(meter) {
+                return (meter / 1852.0);
+            }
 
+            function torad(deg) {
+                return (deg * Math.PI / 180.0);
+            }
+
+            function todeg(rad) {
+                return (rad * 180.0 / Math.PI);
+            }
+
+            function distance(lat1, lng1, lat2, lng2) {
+                return (tonm(google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(lat1, lng1), new google.maps.LatLng(lat2, lng2))));
+            }
 
             function calc_gp_heading() {
                 return(2.0*Math.PI + Math.atan2(decl-ship_lat, gha-ship_lng));
@@ -402,7 +344,39 @@
 
                 return new google.maps.LatLng(lat2.toDeg(), lon2.toDeg());
             }
+            
+            
+             // find the point where two linesintersect
+             function lines_intersect(line1_point1, line1_point2, line2_point1, line2_point2) {
+                var proj = map.getProjection();
+                var line1_p1 = line1_point1;
+                var line1_p2 = line1_point2;
+                var line2_p1 = line2_point1;
+                var line2_p2 = line2_point2;
+                var x1, y1, x2, y2, x3, y3, x4, y4, d, xint, yint;
+           
+                x1 = line1_p1.lat();
+                y1 = line1_p1.lng();
+                x2 = line1_p2.lat();
+                y2 = line1_p2.lng();
 
+                x3 = line2_p1.lat();
+                y3 = line2_p1.lng();
+                x4 = line2_p2.lat();
+                y4 = line2_p2.lng();
+
+                var d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+                if (Math.abs(d) < 1.0e-3)
+                    return (null);
+                var xint = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
+                var yint = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
+
+                return ({
+                    x: xint,
+                    y: yint
+                });
+
+            }
 
 
             function do_calcs() {
