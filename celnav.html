@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Celestial navigation using Google Maps</title>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARFyrT9del1UPyflzCvtezL1vp--zopv4&callback=init_map&libraries=geometry" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body>
+
+    <center>
+        <div id="map" style="width:800px; height:800px;"></div>
+        <p/>
+        <textarea id=results cols=50 rows=10></textarea>
+    </center>
+
+    <script>
+        var map;
+        var ship_lat, ship_lng;
+        var ap_lat, ap_lng;
+        var theta, alt;
+        var run_once = false;
+        var lop_color = 'yellow';
+
+
+
+        function tonm(meter) {
+            return (meter / 1852.0);
+        }
+
+        function torad(deg) {
+            return (deg * Math.PI / 180.0);
+        }
+
+        function todeg(rad) {
+            return (rad * 180.0 / Math.PI);
+        }
+
+        function distance(lat1, lng1, lat2, lng2) {
+            return (tonm(google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(lat1, lng1), new google.maps.LatLng(lat2, lng2))));
+        }
+
+        /*
+        function lines_intersect(line1_point1, line1_point2, line2_point1, line2_point2) {
+            var proj = map.getProjection();
+            var line1_p1 = proj.fromLatLngToPoint(line1_point1);
+            var line1_p2 = proj.fromLatLngToPoint(line1_point2);
+            var line2_p1 = proj.fromLatLngToPoint(line2_point1);
+            var line2_p2 = proj.fromLatLngToPoint(line2_point2);
+            var x1, y1, x2, y2, x3, y3, x4, y4, d, xint, yint;
+
+            x1 = line1_p1.x;
+            y1 = line1_p1.y;
+            x2 = line1_p2.x;
+            y2 = line1_p2.y;
+
+            x3 = line2_p1.x;
+            y3 = line2_p1.y;
+            x4 = line2_p2.x;
+            y4 = line2_p2.y;
+
+            var d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+            if (Math.abs(d) < 1.0e-3)
+                return (null);
+            var xint = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
+            var yint = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
+
+            return ({
+                x: xint,
+                y: yint
+            });
+
+        }
+        */
+        
+        function lines_intersect(line1_point1, line1_point2, line2_point1, line2_point2) {
+            var proj = map.getProjection();
+            var line1_p1 = line1_point1;
+            var line1_p2 = line1_point2;
+            var line2_p1 = line2_point1;
+            var line2_p2 = line2_point2;
+            var x1, y1, x2, y2, x3, y3, x4, y4, d, xint, yint;
+           
+            x1 = line1_p1.lat();
+            y1 = line1_p1.lng();
+            x2 = line1_p2.lat();
+            y2 = line1_p2.lng();
+
+            x3 = line2_p1.lat();
+            y3 = line2_p1.lng();
+            x4 = line2_p2.lat();
+            y4 = line2_p2.lng();
+
+            var d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+            if (Math.abs(d) < 1.0e-3)
+                return (null);
+            var xint = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
+            var yint = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
+
+            return ({
+                x: xint,
+                y: yint
+            });
+
+        }
+
+        function init_map() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {
+                    lat: 27,
+                    lng: -160
+                },
+                zoom: 4,
+                scaleControl: true
+            });
+
+
+            google.maps.event.addListener(map, 'idle',
+                function() {
+                    if (run_once == false)
+                        start();
+                    run_once = true;
+                });
+
+
+
+             map.addListener('click', 
+                function(event) {
+                                    var lat = event.latLng.lat();
+                                    var lng = event.latLng.lng();
+                                console.log('lat,lng='+lat+' '+lng);
+                                proj = map.getProjection();	  	
+                                point = proj.fromLatLngToPoint(new google.maps.LatLng(lat,lng));
+                                console.log('x,y='+point);
+                            });
+     
+
+        }
+
+
+        function start() {
+            function draw_ship() {
+                new google.maps.Marker({
+                    map: map,
+                    position: {
+                        lat: ship_lat,
+                        lng: ship_lng
+                    },
+                    
+                    icon: {
+                        url: 'images/ship_tr.png',
+                        size: new google.maps.Size(50, 32),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(25, 16),
+                    },
+                    
+                });
+            }
+
+
+            function draw_sun() {
+                new google.maps.Marker({
+                    map: map,
+                    position: {
+                        lat: decl,
+                        lng: gha
+                    },
+                    icon: {
+                        url: 'images/sun.png',
+                        size: new google.maps.Size(50, 50),
+                        orgin: new google.maps.Point(25, 25),
+                        anchor: new google.maps.Point(25, 25)
+                    },
+                });
+            }
+
+            function draw_ap_dot() {
+                var circle = {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: 'black',
+                    fillOpacity: .4,
+                    scale: 1.5,
+                    strokeColor: 'black',
+                    strokeWeight: 1
+                };
+
+                new google.maps.Marker({
+                    map: map,
+                    position: {
+                        lat: ap_lat,
+                        lng: ap_lng
+                    },
+                    icon: circle
+                });
+            }
+
+
+            function draw_ap_dot_red() {
+                var circle = {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: 'red',
+                    fillOpacity: .4,
+                    scale: 1.5,
+                    strokeColor: 'red',
+                    strokeWeight: 1
+                };
+
+
+                new google.maps.Marker({
+                    map: map,
+                    position: {
+                        lat: ap_lat,
+                        lng: ap_lng
+                    },
+                    icon: circle
+                });
+            }
+
+            function draw_ap_balloon() {
+                new google.maps.Marker({
+                    map: map,
+                    position: {
+                        lat: ap_lat,
+                        lng: ap_lng
+                    },
+                });
+            }
+
+            function draw_ap_balloon_label(label) {
+                new google.maps.Marker({
+                    map: map,
+                    position: {
+                        lat: ap_lat,
+                        lng: ap_lng
+                    },
+                    label: label
+                });
+            }
+
+
+
+            
+            function draw_cop_old() {
+                var cop = [];
+                for (theta = 0; theta <= 2.0 * Math.PI; theta += 0.01) {
+                    item = {};
+                    item.lng = gha + coalt * Math.cos(theta);
+                    item.lat = decl + coalt * Math.sin(theta);
+                    cop.push(item);
+                }
+
+                cop_path = new google.maps.Polyline({
+                    path: cop,
+                    geodesic: true,
+                    strokeColor: '#00ff00',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+                cop_path.setMap(map);
+            }
+            
+            function draw_cop() {
+                cop_path = new google.maps.Circle({
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                    center: {lat: decl, lng: gha},
+                    radius: 111120 * coalt,
+                    fillOpacity: 0.0
+                });
+                cop_path.setMap(map);
+            }
+            
+            
+
+            function draw_cop_ap() {
+                var cop = [];
+                for (theta = 0; theta <= 2.0 * Math.PI; theta += 0.01) {
+                    item = {};
+                    item.lng = ap_lng + C * Math.cos(theta);
+                    item.lat = ap_lat + C * Math.sin(theta);
+                    cop.push(item);
+                }
+
+                cop_path = new google.maps.Polyline({
+                    path: cop,
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                });
+                cop_path.setMap(map);
+            }
+
+            function draw_nav_triangle() {
+                tri = new google.maps.Polyline({
+                    path: [{
+                        lng: gha,
+                        lat: 90
+                    }, {
+                        lng: gha,
+                        lat: decl
+                    }, {
+                        lng: ap_lng,
+                        lat: ap_lat
+                    }, {
+                        lng: ap_lng,
+                        lat: 90
+                    }],
+                    //path: [{lng: gha,lat: decl},{lng: ap_lng,lat: ap_lat}],
+                    geodesic: true,
+                    strokeColor: '#0000FF',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 5
+                });
+                tri.setMap(map);
+
+            }
+
+            function draw_co_Hc() {
+                tri = new google.maps.Polyline({
+                    path: [{
+                        lng: gha,
+                        lat: decl
+                    }, {
+                        lng: ap_lng,
+                        lat: ap_lat
+                    }],
+                    geodesic: true,
+                    strokeColor: '#0000FF',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 5
+                });
+                tri.setMap(map);
+
+            }
+
+            function draw_lop() {
+                lop = new google.maps.Polyline({
+                    path: [lop1, lop2],
+                    geodesic: false,
+                    strokeColor: lop_color,
+                    strokeOpacity: 1.0,
+                    strokeWeight: 6
+                });
+                lop.setMap(map);
+            }
+
+            function draw_intercept() {
+                intercept = new google.maps.Polyline({
+                    path: [ap_lat_lng, intercept_lat_lng],
+                    geodesic: true,
+                    strokeColor: '#000000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 8
+                });
+                intercept.setMap(map);
+            }
+            
+            function draw_gp_heading() {
+                var L = 20;
+                togp = calc_gp_heading();
+                arrow = new google.maps.Polyline({
+                    path: [{lng: ship_lng, lat: ship_lat}, {lng: ship_lng + L * Math.cos(togp), lat: ship_lat + L * Math.sin(togp)}],
+                    geodesic: false,
+                    strokeColor: '#00ff00',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 6
+                });
+                arrow.setMap(map);
+            }
+
+
+            function calc_gp_heading() {
+                return(2.0*Math.PI + Math.atan2(decl-ship_lat, gha-ship_lng));
+            }
+
+
+            Number.prototype.toRad = function() {
+                return this * Math.PI / 180;
+            }
+
+            Number.prototype.toDeg = function() {
+                return this * 180 / Math.PI;
+            }
+            
+            //from: http://stackoverflow.com/questions/2637023/how-to-calculate-the-latlng-of-a-point-a-certain-distance-away-from-another
+            google.maps.LatLng.prototype.destinationPoint = function(brng, dist) {
+                dist = dist / 3443.92; // rad. of earth in NM for use here
+                brng = brng.toRad();
+
+                var lat1 = this.lat().toRad();
+                var lon1 = this.lng().toRad();
+
+                var lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
+
+                var lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1), Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
+
+                if (isNaN(lat2) || isNaN(lon2)) return null;
+
+                return new google.maps.LatLng(lat2.toDeg(), lon2.toDeg());
+            }
+
+
+
+            function do_calcs() {
+                coalt = 90 - alt;
+                A = 90 - ap_lat;
+                B = 90 - decl;
+                c = gha - ap_lng;
+                C = 180 / Math.PI * Math.acos(Math.cos(torad(A)) * Math.cos(torad(B)) + Math.sin(torad(A)) * Math.sin(torad(B)) * Math.cos(torad(c)));
+                b = 180 / Math.PI * Math.acos((Math.cos(torad(B)) - Math.cos(torad(A)) * Math.cos(torad(C))) / (Math.sin(torad(A)) * Math.sin(torad(C))));
+                
+                Hc = 90 - C;
+                Ho = alt;
+                dH = Ho - Hc;
+                //console.log("dH="+dH);
+
+                Aship = 90 - ship_lat;
+                cship = gha - ship_lng;
+                Cship = 180 / Math.PI * Math.acos(Math.cos(torad(Aship)) * Math.cos(torad(B)) + Math.sin(torad(Aship)) * Math.sin(torad(B)) * Math.cos(torad(cship)));
+                bship = 180 / Math.PI * Math.acos((Math.cos(torad(B)) - Math.cos(torad(Aship)) * Math.cos(torad(Cship))) / (Math.sin(torad(Aship)) * Math.sin(torad(Cship))));
+
+                //console.log('A='+A+' Aship='+Aship);
+                //console.log('C='+C+' Cship='+Cship);
+                //console.log('c='+c+' cship='+cship);
+                //console.log('b='+b+' bship='+bship);
+                //console.log(bship - b);
+                proj = map.getProjection();
+
+                ap_point = proj.fromLatLngToPoint(new google.maps.LatLng(ap_lat, ap_lng));
+                gp_point = proj.fromLatLngToPoint(new google.maps.LatLng(decl, gha));
+
+                if (gha < -180) {
+                    gp_point.x = -(256 - gp_point.x);
+                }
+                //theta = Math.atan2(gp_point.y - ap_point.y, gp_point.x - ap_point.x);
+                //console.log('GP='+gp_point,' AP='+ap_point);
+                //console.log('theta='+theta.toDeg());
+
+                ap_lat_lng = new google.maps.LatLng(ap_lat, ap_lng);
+                ship_lat_lng = new google.maps.LatLng(ship_lat, ship_lng);
+
+                //map.setCenter(ap_lat_lng);
+                //map.setZoom(6);
+
+
+
+                if (ap_lng > gha) {
+                    b = 180 - b;
+                    dH = -dH;
+                }
+                
+                if (ship_lng > gha) {
+                    bship = 180 - bship;
+                }
+
+                intercept_lat_lng = ap_lat_lng.destinationPoint(b, 60 * dH);
+                //console.log("Intercept end-point (opp. to AP)="+intercept_lat_lng);
+                ap_int_point = proj.fromLatLngToPoint(intercept_lat_lng);
+                //console.log("AP-intercept point="+ap_int_point);
+
+                L = 350; //side of line of position
+                lop1 = intercept_lat_lng.destinationPoint(b + 90, L);
+                lop2 = intercept_lat_lng.destinationPoint(b - 90, L);
+                //console.log("lop1="+lop1+" lop2="+lop2);
+
+                //compute shortest distance from LOP to ship
+                //http://stackoverflow.com/questions/1811549/perpendicular-on-a-line-from-a-given-point
+                //x1 = lop1_x; y1 = lop1_y;
+                //x2 = lop2_x; y2 = lop2_y;
+                x1 = lop1.lng();
+                y1 = lop1.lat();
+                x2 = lop2.lng();
+                y2 = lop2.lat();
+                x3 = ship_lng;
+                y3 = ship_lat;
+                k = ((y2 - y1) * (x3 - x1) - (x2 - x1) * (y3 - y1)) / ((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+                x4 = x3 - k * (y2 - y1);
+                y4 = y3 + k * (x2 - x1);
+                
+                closest = new google.maps.LatLng(y4, x4);
+                ship_lop_dist = distance(ship_lat, ship_lng, closest.lat(), closest.lng());
+                //console.log("Ship-LOP distance="+ship_lop_dist+"NM");
+                
+            }
+
+            function render_all() {
+                //map.setCenter(new google.maps.LatLng(ap_lat, ap_lng));
+
+                do_calcs();
+                //draw_ap_balloon();
+                //draw_co_Hc();
+                //draw_intercept();
+                //draw_lop();
+                //draw_ap_dot();
+                //draw_cop();
+                //draw_ship();
+                //draw_sun();
+                
+                //draw_cop_ap();
+                //draw_nav_triangle();
+                
+            }
+
+            function dump_calcs() {
+                console.log('-----------');
+                console.log('Ship to GP: ' + distance(ship_lat, ship_lng, decl, gha));;
+                console.log('AP to ship: ' + distance(ship_lat, ship_lng, ap_lat, ap_lng));
+                console.log('Hc=' + Hc);
+                console.log('Ho=' + Ho);
+                console.log("dH="+dH);
+                console.log('b=azimuth=' + b);
+                console.log('LOP to ship=' + ship_lop_dist);
+            }
+
+            function rand(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            //For figs 4, 5, and 6, depending on which draw_... line is called
+            function one_shot() {
+                var gha_list = [-(94 + 20 / 60), -(109 + 20 / 60), -(124 + 20 / 60), -(139 + 20 / 60), -(154 + 20 / 60), -(169 + 20 / 60), -(184 + 20 / 60), -(199 + 20 / 60), -(214 + 20 / 60)];
+                var decl_list = [6 + 9.3 / 60, 6 + 10.3 / 60, 6 + 11.3 / 60, 6 + 12.2 / 60, 6 + 13.2 / 60, 6 + 14.1 / 60, 6 + 15 / 60, 6 + 16 / 60, 6 + 16.9 / 60];
+                //alitudes from https://www.esrl.noaa.gov/gmd/grad/solcalc/azel.html,
+                //starting at April 5 2015, 18:20:00 in one hour increments from (27 deg 20'N,160 deg 49' W)
+               var alt_list = [23.71, 36.84, 49.44, 60.63, 68.01, 67.40, 59.28, 47.82, 35.12]; //from the ship
+                var index = 3;
+
+                gha = gha_list[index];
+                decl = decl_list[index];
+                alt = alt_list[index];
+
+                console.log('ap_lat=' + ap_lat, ' ap_lng=' + ap_lng + ' gha=' + gha + ' decl=' + decl);
+
+                do_calcs();
+                draw_ap_balloon();
+                //draw_nav_triangle();
+                draw_ship();
+                draw_co_Hc();
+                draw_intercept();
+                draw_lop();
+                draw_sun();
+                dump_calcs();
+               
+                //draw_cop();
+            }
+
+            function three_shots() {
+                var gha_list = [-(94 + 20 / 60), -(109 + 20 / 60), -(124 + 20 / 60), -(139 + 20 / 60), -(154 + 20 / 60), -(169 + 20 / 60), -(184 + 20 / 60), -(199 + 20 / 60), -(214 + 20 / 60)];
+                var decl_list = [6 + 9.3 / 60, 6 + 10.3 / 60, 6 + 11.3 / 60, 6 + 12.2 / 60, 6 + 13.2 / 60, 6 + 14.1 / 60, 6 + 15 / 60, 6 + 16 / 60, 6 + 16.9 / 60];
+                var alt_list = [23.71, 36.84, 49.44, 60.63, 68.01, 67.40, 59.28, 47.82, 35.12]; //from the ship
+
+                var lop1_list = [];
+                var lop2_list = [];
+
+                function calc_and_draw() {
+                    do_calcs();
+                    draw_sun();
+                    //draw_ap_balloon();
+                    draw_ship();
+                    //draw_co_Hc();
+                    //draw_intercept();
+                    //draw_lop();
+                }
+
+                var geo = 3;
+
+                gha = gha_list[geo];
+                decl = decl_list[geo];
+                alt = alt_list[geo];
+                console.log(gha,decl,alt);
+                calc_and_draw();
+                lop1_list.push(lop1);
+                lop2_list.push(lop2);
+
+                gha = gha_list[geo + 1];
+                decl = decl_list[geo + 1];
+                alt = alt_list[geo + 1];
+                console.log(gha,decl,alt);
+                calc_and_draw();
+                lop1_list.push(lop1);
+                lop2_list.push(lop2);
+
+                gha = gha_list[geo + 2];
+                decl = decl_list[geo + 2];
+                alt = alt_list[geo + 2];
+                console.log(gha,decl,alt);
+                calc_and_draw();
+                lop1_list.push(lop1);
+                lop2_list.push(lop2);
+
+                int12 = lines_intersect(lop1_list[0], lop2_list[0], lop1_list[1], lop2_list[1]);
+                int13 = lines_intersect(lop1_list[0], lop2_list[0], lop1_list[2], lop2_list[2]);
+                int23 = lines_intersect(lop1_list[1], lop2_list[1], lop1_list[2], lop2_list[2]);
+                if (int12 != null && int13 != null && int23 != null) {
+                    int_x = (int12.x + int13.x + int23.x) / 3;
+                    int_y = (int12.y + int13.y + int23.y) / 3;
+
+                    //int_x and int_y match the lat,lng of the reviewer's hand-work
+                    
+                    center_of_ch = {lat: int_x, lng: int_y};
+                    ship_ch_dist = distance(ship_lat, ship_lng, center_of_ch.lat, center_of_ch.lng);
+                    console.log('center of ch='+center_of_ch.lat + ',' + center_of_ch.lng);
+                    
+                    ap_to_ship = distance(ship_lat, ship_lng, ap_lat, ap_lng);
+                    $('#results').append('{' + ap_to_ship + ',' + ship_ch_dist + '},\n');
+                }
+            }
+
+            function random_ap_circle() {
+                var gha_list = [-(94 + 20 / 60), -(109 + 20 / 60), -(124 + 20 / 60), -(139 + 20 / 60), -(154 + 20 / 60), -(169 + 20 / 60), -(184 + 20 / 60), -(199 + 20 / 60), -(214 + 20 / 60)];
+                var decl_list = [6 + 9.3 / 60, 6 + 10.3 / 60, 6 + 11.3 / 60, 6 + 12.2 / 60, 6 + 13.2 / 60, 6 + 14.1 / 60, 6 + 15 / 60, 6 + 16 / 60, 6 + 16.9 / 60];
+                var alt_list = [23.71, 36.84, 49.44, 60.63, 68.01, 67.40, 59.28, 47.82, 35.12]; //from the ship
+                var index;
+                var worse;
+                var geo = 3;
+                var Hsum, frac;
+
+                map.setCenter(new google.maps.LatLng(ship_lat, ship_lng));
+                map.setZoom(7);
+
+                worse = 0;
+                index = 0;
+                while (index < 5000) //ap_lat_list.length)
+                {
+                    //r = 2 * Math.sqrt(Math.random());
+                    r = 2.0 * Math.sqrt(Math.random());
+                    phi = 2.0 * Math.PI * Math.random();
+                    
+                    AP = proj.fromPointToLatLng(new google.maps.Point(ship.x + r * Math.cos(phi), ship.y + r * Math.sin(phi)));
+
+                    ap_lat = AP.lat();
+                    ap_lng = AP.lng();
+                    
+                    var lop1_list = [];
+                    var lop2_list = [];
+
+                    //sun's: 2015-April-5, 21:20 GMT
+                    gha = gha_list[geo];
+                    decl = decl_list[geo];
+                    alt = alt_list[geo];
+                    render_all();
+                    lop1_list.push(lop1);
+                    lop2_list.push(lop2);
+                    //dump_calcs();
+                    if (index == 0) {
+                        draw_sun();
+                        togp = calc_gp_heading();
+                        draw_gp_heading();
+                        console.log('geo='+(geo)+' togp='+todeg(togp));
+                        console.log('bship='+bship);
+                    }
+                    bphi = b;
+
+                    
+                    //need all 3 shots to form the cocked hat
+                    //sun's: 2015-April-5, 22:20 GMT
+                    gha = gha_list[geo + 1];
+                    decl = decl_list[geo + 1];
+                    alt = alt_list[geo + 1];
+                    render_all();
+                    lop1_list.push(lop1);
+                    lop2_list.push(lop2);
+                    //dump_calcs();
+                     if (index == 0) {
+                        draw_sun();
+                        togp = calc_gp_heading();
+                        draw_gp_heading();
+                        console.log('geo='+(geo+1)+' togp='+todeg(togp));
+                        console.log('bship='+bship);
+                    }
+                    bphi += b;
+
+                    //sun's: 2015-April-5, 23:20 GMT
+                    gha = gha_list[geo + 2];
+                    decl = decl_list[geo + 2];
+                    alt = alt_list[geo + 2];
+                    render_all();
+                    lop1_list.push(lop1);
+                    lop2_list.push(lop2);
+                     if (index == 0) {
+                        draw_sun();
+                        togp = calc_gp_heading();
+                        draw_gp_heading();
+                        console.log('geo='+(geo+2)+' togp='+todeg(togp));
+                        console.log('bship='+bship);
+                    }
+                    bphi += b;
+                    
+                    int12 = lines_intersect(lop1_list[0], lop2_list[0], lop1_list[1], lop2_list[1]);
+                    int13 = lines_intersect(lop1_list[0], lop2_list[0], lop1_list[2], lop2_list[2]);
+                    int23 = lines_intersect(lop1_list[1], lop2_list[1], lop1_list[2], lop2_list[2]);
+                    if (int12 != null && int13 != null && int23 != null) {
+                        int_x = (int12.x + int13.x + int23.x) / 3;
+                        int_y = (int12.y + int13.y + int23.y) / 3;
+                        
+                        center_of_ch = {lat: int_x, lng: int_y};
+                        ship_ch_dist = distance(ship_lat, ship_lng, center_of_ch.lat, center_of_ch.lng);
+                        ap_to_ship = distance(ship_lat, ship_lng, ap_lat, ap_lng);
+
+                        frac = ap_to_ship / ship_ch_dist;
+                        bphi /= 3;
+                        
+                        $('#results').append('{'+phi + ',' + frac + '},\n');
+                        //$('#results').append('{'+frac * Math.cos(phi) + ',' + frac  * Math.sin(phi)  + '},\n');
+                        //$('#results').append(bphi + ' ' + frac + '\n');
+
+                        //$('#results').append('{'+ap_to_ship+','+ship_ch_dist+',',+AP.lat()+','+AP.lng()+'},\n');
+                        if (ship_ch_dist > ap_to_ship)
+                            worse++;
+                        //draw_ap_dot();
+                    }
+                    index++;
+                }
+                draw_ship();
+                console.log('worse results=' + worse + ' out of ' + index);
+            }
+            
+            function random_ap_circle_one_shot() {
+                var gha_list = [-(94 + 20 / 60), -(109 + 20 / 60), -(124 + 20 / 60), -(139 + 20 / 60), -(154 + 20 / 60), -(169 + 20 / 60), -(184 + 20 / 60), -(199 + 20 / 60), -(214 + 20 / 60)];
+                var decl_list = [6 + 9.3 / 60, 6 + 10.3 / 60, 6 + 11.3 / 60, 6 + 12.2 / 60, 6 + 13.2 / 60, 6 + 14.1 / 60, 6 + 15 / 60, 6 + 16 / 60, 6 + 16.9 / 60];
+                var alt_list = [23.71, 36.84, 49.44, 60.63, 68.01, 67.40, 59.28, 47.82, 35.12]; //from the ship
+                var index;
+                var worse;
+                var geo = 5; //3
+                var Hsum, frac;
+
+                map.setCenter(new google.maps.LatLng(ship_lat, ship_lng));
+                map.setZoom(5);
+
+                index = 0;
+                while (index < 1) //ap_lat_list.length)
+                {
+                    r = 2 * Math.sqrt(Math.random());
+                    phi = 2.0 * Math.PI * Math.random();
+                    
+                    AP = proj.fromPointToLatLng(new google.maps.Point(ship.x + r * Math.cos(phi), ship.y + r * Math.sin(phi)));
+
+                    ap_lat = AP.lat();
+                    ap_lng = AP.lng();
+                    
+                    //sun's: 2015-April-5, 21:20 GMT
+                    gha = gha_list[geo];
+                    decl = decl_list[geo];
+                    alt = alt_list[geo];
+                    render_all();
+        
+                    if (index == 0)
+                        draw_sun();
+                    
+            
+                    db = 180.0/Math.PI * phi;
+                    togp = calc_gp_heading();
+                    console.log(togp);
+                    //$('#results').append(db + ' ' + ship_lop_dist + '\n');
+                    $('#results').append(ship_lop_dist * Math.cos(phi) + ' ' + ship_lop_dist  * Math.sin(phi)  + '\n');
+                    //dump_calcs();
+                    //draw_ap_dot();
+                
+                    index++;
+                }
+                draw_ship();
+            }
+
+
+            function shot_sequence(data, ap_lat0, ap_lng0, index_offset) {
+                //time start at 18:20, April 5, 2015
+                var gmt = [18 + 20 / 60, 19 + 20 / 60, 20 + 20 / 60, 21 + 20 / 60, ];
+                var gha_list = [-(94 + 20 / 60), -(109 + 20 / 60), -(124 + 20 / 60), -(139 + 20 / 60), -(154 + 20 / 60), -(169 + 20 / 60), -(184 + 20 / 60), -(199 + 20 / 60), -(214 + 20 / 60)];
+                var decl_list = [6 + 9.3 / 60, 6 + 10.3 / 60, 6 + 11.3 / 60, 6 + 12.2 / 60, 6 + 13.2 / 60, 6 + 14.1 / 60, 6 + 15 / 60, 6 + 16 / 60, 6 + 16.9 / 60];
+                var alt_list = [23.71, 36.84, 49.44, 60.63, 68.01, 67.40, 59.28, 47.82, 35.12]; //from the ship
+
+                //Starting April 6, 2015 18:00, then on into April 7 with 69.07
+                alt_list1 = [19.52, 32.74, 45.6, 57.46, 66.6, 69.0, 62.79, 52.01, 39.56, 26.49, 13.23];
+                gha_list1 = [-(89 + 23.8 / 60), -(104 + 23.9 / 60), -(119 + 24.1 / 60), -(134 + 24.3 / 60), -(149 + 24.5 / 60), -(164 + 24.6 / 60), -(179 + 24.8 / 60), -(194 + 25 / 60), -(209 + 25.2 / 60), -(224 + 25.4 / 60)];
+                decl_list1 = [6 + 31.8 / 60, 6 + 32.7 / 60, 6 + 33.6 / 60, 6 + 34.6 / 60, 6 + 35.5 / 60, 6 + 36.5 / 60, 6 + 37.4 / 60, 6 + 38.4 / 60, 6 + 39.3 / 60, 6 + 40.2 / 60];
+                var color_list = ['blue', 'green', 'yellow', 'hotpink', 'lime', 'darkgoldenrod', 'maroon', 'orange', 'firebrick'];
+                var labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+                var index, c;
+
+
+                if (data == 1) {
+                    gha_list = gha_list1;
+                    alt_list = alt_list1;
+                    decl_list = decl_list1;
+                }
+
+                //ap_lat = 23.63;
+                //ap_lng = -155.14;
+
+                ap_lat = ap_lat0;
+                ap_lng = ap_lng0;
+                
+                ap_to_ship = distance(ship_lat, ship_lng, ap_lat, ap_lng);
+                if (data != 1)
+                    $('#results').append('{0,' + ap_to_ship + '},\n');
+                
+                //$('#results').append('{'+ap_lng+',' + ap_lat + '},\n');
+
+                draw_ship();
+
+
+                for (c = 0; c <= 6; c++) {
+                    var lop1_list = [];
+                    var lop2_list = [];
+                    draw_ap_balloon_label(labels[c + index_offset]);
+
+                    lop_color = 'brown'; //color_list[c];
+
+                    for (index = c; index < c + 3; index++) {
+                        gha = gha_list[index];
+                        decl = decl_list[index];
+                        alt = alt_list[index];
+                        render_all();
+                        lop1_list.push(lop1);
+                        lop2_list.push(lop2);
+                        //dump_calcs();
+                        draw_sun();
+                    }
+
+                    int12 = lines_intersect(lop1_list[0], lop2_list[0], lop1_list[1], lop2_list[1]);
+                    int13 = lines_intersect(lop1_list[0], lop2_list[0], lop1_list[2], lop2_list[2]);
+                    int23 = lines_intersect(lop1_list[1], lop2_list[1], lop1_list[2], lop2_list[2]);
+                    int_x = (int12.x + int13.x + int23.x) / 3;
+                    int_y = (int12.y + int13.y + int23.y) / 3;
+
+                    center_of_ch = {lat: int_x, lng: int_y};
+                    ship_ch_dist = distance(ship_lat, ship_lng, center_of_ch.lat, center_of_ch.lng);
+                    ap_to_ship = distance(ship_lat, ship_lng, ap_lat, ap_lng);
+
+
+                    //for convergence with iteration #
+                    $('#results').append('{'+(c+index_offset+1).toString()+','+ship_ch_dist+'},\n');
+                    
+                    //for (lat,lng) positions of cocked-hat
+                    //$('#results').append('{' + center_of_ch.lng + ',' + center_of_ch.lat + '},\n');
+
+                    ap_lat = center_of_ch.lat;
+                    ap_lng = center_of_ch.lng;
+
+                }
+
+                map.setCenter(new google.maps.LatLng(ship_lat, ship_lng));
+                map.setZoom(7);
+                return ({
+                    lat: ap_lat,
+                    lng: ap_lng
+                });
+
+            }
+            
+            //makes Fig 1 and 2 in the paper
+            function basic_cops()
+            {  
+                decl = 6 + 14 / 60;
+                gha = -(139 + 20 / 60);
+                alt = 60.6266;
+                render_all();
+            
+                decl = 6 + 13.2 / 60;
+                gha = -(154 + 20 / 60);
+                alt = 68.01;
+                render_all();
+            }
+
+
+            proj = map.getProjection();
+
+            ship_lat = 27 + 20 / 60; //27.33
+            ship_lng = -(160 + 49 / 60); //-160.82
+            
+            ship = proj.fromLatLngToPoint(new google.maps.LatLng(ship_lat, ship_lng));
+
+            ap_lat = 23.63;
+            ap_lng = -155;
+            
+            //ap_lat = ship_lat;
+            //ap_lng = ship_lng;
+
+            
+            three_shots(); // makes fig. 7
+            //one_shot(); // makes fig 6
+
+            //makes fig 10 (both lines)
+            //ret = shot_sequence(0,ap_lat,ap_lng,0);
+            //shot_sequence(1,ret.lat,ret.lng,7);
+
+            //makes data for Fig 9 
+           
+            //random_ap_circle_one_shot();
+            //random_ap_circle();
+            //draw_gp_heading();
+            
+            //makes Fig 1 and 2
+            //basic_cops();
+           
+        
+            
+    }
+    </script>
+
+</body>
+
+</html>
