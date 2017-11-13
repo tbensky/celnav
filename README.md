@@ -14,7 +14,7 @@ To get up and running quickly, do this:
 
 1. Download celnav.html and the images folder.
 
-2. Wherever you place celnav.html, maintain the structure, that 'images' is a folder off of the location
+2. Wherever you place celnav.html, maintain the structure, in that the 'images' folder is directly branched off of the location
 where you put celnav.html.
 
 3. Load celnav.html into a text editor.  Put your Google Maps API key into line 5 (the
