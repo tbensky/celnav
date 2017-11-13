@@ -101,15 +101,17 @@ paper. Results are available in variables ```Aship```, ```bship```, ```Cship```,
 * The intercept distance, ```dH```.
 
 * (lat,lng) of the intercept point (towards or away from the GP, relative to the AP). This is available in the object ```intercept_lat_lng``` or as scalars
-in ```intercept_lat_lng.lng()``` and ```intercept_lat_lng.lat()```.
+in ```intercept_lat_lng.lng()``` and ```intercept_lat_lng.lat()```. This is the center point of the LOP.
 
 * End-points of the line of position (LOP) in objects ```lop1``` and ```lop2```, and as scalars as ```lop1.lng()```, ```lop1.lat()```, ```lop2.lng()``` and ```lop2.lat()```.
+These points are equidistant from the (lat,lng) in ```intercept_lat_lng```.
 
 * Shortest distance from the ship to the LOP in ```ship_lop_dist```.
 
 Next, decide what you you want to plot on the map.  The totality of pre-defined drawing capabilities are in the function called ```render_all()``` (above). So
 here is a code-set that would set up the key variables, run the calculations, the plot the ship, AP, intercept distance, and line of position.  We also
-center the map on the ship, and set the zoom level to 6.
+center the map on the ship, and set the zoom level to 6.  
+
 
 ```javascript
     ship_lat = 27.33
@@ -129,16 +131,19 @@ center the map on the ship, and set the zoom level to 6.
     draw_intercept(); 
     draw_lop();
     
-    map.setCenter(ship_lat,ship_lng);
+    map.setCenter(new google.maps.LatLng(ship_lat,ship_lng));
     map.setZoom(6);
     
+    console.log(ship_lop_dist);
+    console.log(intercept_lat_lng.lat(), intercept_lat_lng.lng());
+    console.log(dH);
 ```
 
+Opening the Javascript console will reveal a 16.93, which is the Nautical Miles between the ship and LOP. You'll
+see the (lat,lng) of the intercept is (28,-159.9) and the intercept distance, dH is -6.28.
 
 
-## Tour of Code
-
-The code was meant to be a self-contained Javascript file.  
+  
 
 
 

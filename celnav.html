@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Celestial navigation using Google Maps</title>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=PUT-YOUR_API_KEY_HERE&callback=init_map&libraries=geometry" async defer></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=PUT-YOUR-API-KEY-HERE&callback=init_map&libraries=geometry" async defer></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 
@@ -19,10 +19,23 @@
         var run_once = false;       // for internal map loading logic
         var lop_color = 'yellow';   // default drawing color
         
+        // user sets these
         var ship_lat, ship_lng;     // position of the ship
         var ap_lat, ap_lng;         // position of the AP
         var gha, decl;              // GHA and declination of the Sun
         var alt;                    // altitude of the Sun
+        
+        //do_calcs() will compute these. They available as global variables as a result of calling do_calcs().
+        var A, B, b, C, c;                  // Navigation triangle for the AP
+        var Aship, bship, Cship, cship;     // Navigation triangle for the ship
+        var intercept_lat_lng;              // Intercept point, toward or away from the GP along the AP-GP connector
+        var lop1, lop2;                     // Endpoints of the LOP
+        var coalt;                          // 90 - alt
+        var Hc;                             // 90 - C from APs navigation triangle 
+        var Ho;                             // = alt
+        var dH;                             // intercept distance
+        var ship_lop_dist;              // closest resulting ship-LOP distance.
+        
         
         
         // callback in the long <script ...> line above, to get the basic Google map up and running
@@ -852,14 +865,7 @@
             //shot_sequence(1,ret.lat,ret.lng,7);
             
             
-            /////////////////// END /////////////////////
-
-
-         
-            
-           
-           
-        
+            /////////////////// END ///////////////////// 
             
     }
     </script>
