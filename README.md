@@ -59,10 +59,10 @@ and looks like this
 To control what is drawn, you basically uncomment what you want to draw and comment what you don't want to draw. Above,
 it looks like only the ship and sun will be drawn.
 
-## Setting up your own celestial navigation scenarios
+## Setting up your own celestial navigation scenario
 
 Simulating a sight-reduction, which is at the core all this software does, requires three items: (lat,lng) of the AP, (declination,GHA) of the Sun's GP, and the altitude of the Sun you'd measure
-from your ship.  These are held as global variables at the top of the code as
+from your ship.  These are held as global variables at the top of the code as in this block:
 
 ```javascript
         var ship_lat, ship_lng;     // position of the ship
@@ -70,6 +70,38 @@ from your ship.  These are held as global variables at the top of the code as
         var gha, decl;              // GHA and declination of the Sun
         var alt;                    // altitude of the Sun
 ```
+
+
+So if you want to set up your own scenario, say to do things perhaps in waters more familiar to you, comment out (or remove) all lines between the ```////START HERE////``` and ```///END///``` blocks.  It its place, 
+define all of these variables, as you wish. In other words, something like:
+
+```javascript
+    ship_lat = 27 + 20 / 60; //27.33
+    ship_lng = -(160 + 49 / 60); //-160.82
+                 
+    ap_lat = 23.63;
+    ap_lng = -155;
+
+    decl = 6 + 14 / 60;
+    gha = -(139 + 20 / 60);
+    alt = 60.6266;
+```
+
+Naturally, the (decl,GHA) of the Sun would come from the Nautical Almanac, and the altitude, which in this case is the altitude of the Sun one would observe from the
+deck of the ship, which would be found an online calculator NOAA Solar Calculator, like [http://www.esrl.noaa.gov/gmd/grad/solcalc/>](this one). The observation
+time is naturally a constant throughout.
+
+With these variables define, do a call to a function called ```do_calcs()```. This computed a variety of things from your variables, including:
+
+* The navigation triangle for the ship (supposedly, the observed altitude could come from this--we just always used the online calculator).
+
+* The navigation triangle for the AP.
+
+* The intercept distance, dH
+
+* (lat,lng) of the intercept point (towards or away from the GP, relative to the AP)
+
+Next, decide what you you want to plot on the map.  The totality of pre-defined drawing capabilities are in the function called ```render_all()```.
 
 
 
