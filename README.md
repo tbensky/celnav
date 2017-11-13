@@ -12,7 +12,7 @@ To get up and running quickly, do this:
 
 1. Download celnav.html and the images folder.
 
-2. Wherever you place celnav.html, maintain the structure, in that the 'images' folder is directly branched off of the location
+2. Wherever you place celnav.html, maintain the structure, in that the 'images' folder (with all images in it) is directly branched off of the location
 where you put celnav.html.
 
 3. Load celnav.html into a text editor.  Put your Google Maps API key into line 5 (the
@@ -22,7 +22,7 @@ long `<script async defer src="https://maps.googleapis.....>` line.
 
 You should see a map of a ship and the Sun, near the Hawaiian islands.
 
-5. If nothing happens, check your Javascript error console. You might have to hit 'reload' again, or your browser, or
+5. If nothing happens in your browser, check your Javascript error console. You might have to hit 'reload' again, or your browser, or
 maybe your Google Maps API key is wrong, etc.
 
 ## Making the figures found in the paper 
