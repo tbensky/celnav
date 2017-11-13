@@ -3,9 +3,7 @@
 
 Here is documentation for the code presented in the paper "Teaching and
 Learning Celestial Navigation Using Google Maps" that was published in
-the [Journal of
-Navigation](https://www.cambridge.org/core/journals/journal-of-
-navigation) (https://doi.org/10.1017/S0373463317000777), published
+the [Journal of Navigation](https://www.cambridge.org/core/journals/journal-of-navigation) (https://doi.org/10.1017/S0373463317000777), published
 online: 07 November 2017.
 
 ## Quick start
@@ -26,7 +24,37 @@ You should see a map of a ship and the Sun, near the Hawaiian islands.
 
 ## Making the figures found in the paper 
 
+Probably the best way to get started with the code is to make it reproduce the figures found in the paper.
 
+To do so, scroll down to line 775 or so, the one containing the text 'START HERE.' There you'll see a whole slew
+of comments on how each figure was generated. 
+
+Try to at least glance at the function ``render_all()``.  It is the main function called
+when any of the code is ready to draw something on the map (like the ship, sun, an LOP, etc.),
+and looks like this
+```javascript
+ function render_all() {
+                do_calcs();                 // Always leave uncommented
+                
+                //
+                //pick what you want to draw by uncommenting a given draw_... line
+                //comment out what you don't want to draw
+                //
+                //draw_ap_balloon();        // Draw a balloon at the AP
+                //draw_co_Hc();               // Draw AP-to-sun connectors
+                //draw_intercept();           // Draw intercept (corrections to calculated vs. observed delta H's)
+                //draw_lop();               // Draw a line of position
+                //draw_ap_dot();            // Draw a small dot at the AP
+                //draw_cop();               // Draw a circle of position
+                draw_ship();                // Draw the ship
+                draw_sun();                 // Draw the Sun
+                //draw_nav_triangle();      // Draw the navigation triangle (connecting the north pole, AP, and GP)
+                
+            }
+```
+
+To control what is drawn, you basically uncomment what you want to draw and comment what you don't want to draw. Above,
+it looks like only the ship and sun will be drawn.
 
 
 
