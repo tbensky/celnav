@@ -94,16 +94,16 @@ time is naturally a constant throughout.
 With these variables defined, do a call to a function called ```do_calcs()```. This will compute a variety of things from your variables, including:
 
 * The navigation triangle for the ship (supposedly, the observed altitude could come from this--we just always used the online calculator). See Fig 3 in the
-paper. Results are available in variables ```Ashvp```, ```bship```, ```Cship```, and ```cship```.
+paper. Results are available in variables ```Aship```, ```bship```, ```Cship```, and ```cship```.
 
 * The navigation triangle for the AP.  Results are available in variables ```A```, ```B```, ```b```, ```C```, and ```c```.
 
-* The intercept distance, dH
+* The intercept distance, ```dH```.
 
 * (lat,lng) of the intercept point (towards or away from the GP, relative to the AP). This is available in the object ```intercept_lat_lng``` or as scalars
 in ```intercept_lat_lng.lng()``` and ```intercept_lat_lng.lat()```.
 
-* End-points of the line of position (LOP) in objects ```lop1``` and ```lop2```, and as scalars as ```lop1.lng()``` ```lop1.lat()``` ```lop2.lng()``` and ```lop2.lat()```.
+* End-points of the line of position (LOP) in objects ```lop1``` and ```lop2```, and as scalars as ```lop1.lng()```, ```lop1.lat()```, ```lop2.lng()``` and ```lop2.lat()```.
 
 * Shortest distance from the ship to the LOP in ```ship_lop_dist```.
 
