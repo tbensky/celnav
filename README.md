@@ -91,7 +91,7 @@ Naturally, the (decl,GHA) of the Sun would come from the Nautical Almanac, and t
 deck of the ship, which would be found an online calculator, like the [NOAA Solar Calculator](http://www.esrl.noaa.gov/gmd/grad/solcalc/). The observation
 time is naturally a constant throughout.
 
-With these variables define, do a call to a function called ```do_calcs()```. This computed a variety of things from your variables, including:
+With these variables defined, do a call to a function called ```do_calcs()```. This will compute a variety of things from your variables, including:
 
 * The navigation triangle for the ship (supposedly, the observed altitude could come from this--we just always used the online calculator).
 
@@ -101,7 +101,34 @@ With these variables define, do a call to a function called ```do_calcs()```. Th
 
 * (lat,lng) of the intercept point (towards or away from the GP, relative to the AP)
 
-Next, decide what you you want to plot on the map.  The totality of pre-defined drawing capabilities are in the function called ```render_all()```.
+* End-points of the line of position (LOP)
+
+Next, decide what you you want to plot on the map.  The totality of pre-defined drawing capabilities are in the function called ```render_all()``` (above). So
+here is a code-set that would set up the key variables, run the calculations, the plot the ship, AP, intercept distance, and line of position.  We also
+center the map on the ship, and set the zoom level to 6.
+
+```javascript
+    ship_lat = 27.33
+    ship_lng = -160.82
+                 
+    ap_lat = 23.63;
+    ap_lng = -155;
+
+    decl = 6.23;
+    gha = -139.22;
+    alt = 60.6266;
+    
+    do_calcs();
+    
+    draw_ship();
+    draw_ap_balloon();
+    draw_intercept(); 
+    draw_lop();
+    
+    map.setCenter(ship_lat,ship_lng);
+    map.setZoom(6);
+    
+```
 
 
 
