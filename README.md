@@ -76,14 +76,14 @@ So if you want to set up your own scenario, say to do things perhaps in waters m
 define all of these variables, as you wish. In other words, something like:
 
 ```javascript
-    ship_lat = 27 + 20 / 60; //27.33
-    ship_lng = -(160 + 49 / 60); //-160.82
+    ship_lat = 27.33
+    ship_lng = -160.82
                  
     ap_lat = 23.63;
     ap_lng = -155;
 
-    decl = 6 + 14 / 60;
-    gha = -(139 + 20 / 60);
+    decl = 6.23;
+    gha = -139.22;
     alt = 60.6266;
 ```
 
