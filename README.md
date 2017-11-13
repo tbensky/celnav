@@ -88,7 +88,7 @@ define all of these variables, as you wish. In other words, something like:
 ```
 
 Naturally, the (decl,GHA) of the Sun would come from the Nautical Almanac, and the altitude, which in this case is the altitude of the Sun one would observe from the
-deck of the ship, which would be found an online calculator NOAA Solar Calculator, like [http://www.esrl.noaa.gov/gmd/grad/solcalc/>](this one). The observation
+deck of the ship, which would be found an online calculator NOAA Solar Calculator, like [this one](http://www.esrl.noaa.gov/gmd/grad/solcalc/>). The observation
 time is naturally a constant throughout.
 
 With these variables define, do a call to a function called ```do_calcs()```. This computed a variety of things from your variables, including:
