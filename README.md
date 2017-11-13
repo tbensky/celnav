@@ -93,10 +93,10 @@ time is naturally a constant throughout.
 
 With these variables defined, do a call to a function called ```do_calcs()```. This will compute a variety of things from your variables, including:
 
+* The navigation triangle for the AP.  Results are available in variables ```A```, ```B```, ```b```, ```C```, and ```c```.
+
 * The navigation triangle for the ship (supposedly, the observed altitude could come from this--we just always used the online calculator). See Fig 3 in the
 paper. Results are available in variables ```Aship```, ```bship```, ```Cship```, and ```cship```.
-
-* The navigation triangle for the AP.  Results are available in variables ```A```, ```B```, ```b```, ```C```, and ```c```.
 
 * The intercept distance, ```dH```.
 
