@@ -18,11 +18,11 @@
         var map;                    // Google Map map instance
         var run_once = false;       // for internal map loading logic
         var lop_color = 'yellow';   // default drawing color
-        var theta, alt;             // internals
         
         var ship_lat, ship_lng;     // position of the ship
         var ap_lat, ap_lng;         // position of the AP
         var gha, decl;              // GHA and declination of the Sun
+        var alt;                    // altitude of the Sun
         
         
         // callback in the long <script ...> line above, to get the basic Google map up and running
@@ -379,9 +379,6 @@
                 if (gha < -180) {
                     gp_point.x = -(256 - gp_point.x);
                 }
-                //theta = Math.atan2(gp_point.y - ap_point.y, gp_point.x - ap_point.x);
-                //console.log('GP='+gp_point,' AP='+ap_point);
-                //console.log('theta='+theta.toDeg());
 
                 ap_lat_lng = new google.maps.LatLng(ap_lat, ap_lng);
                 ship_lat_lng = new google.maps.LatLng(ship_lat, ship_lng);

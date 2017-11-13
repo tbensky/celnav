@@ -59,5 +59,23 @@ and looks like this
 To control what is drawn, you basically uncomment what you want to draw and comment what you don't want to draw. Above,
 it looks like only the ship and sun will be drawn.
 
+## Setting up your own celestial navigation scenarios
+
+Simulating a sight-reduction, which is at the core all this software does, requires three items: (lat,lng) of the AP, (declination,GHA) of the Sun's GP, and the altitude of the Sun you'd measure
+from your ship.  These are held as global variables at the top of the code as
+
+```javascript
+        var ship_lat, ship_lng;     // position of the ship
+        var ap_lat, ap_lng;         // position of the AP
+        var gha, decl;              // GHA and declination of the Sun
+        var alt;                    // altitude of the Sun
+```
+
+
+
+## Tour of Code
+
+The code was meant to be a self-contained Javascript file.  
+
 
 
