@@ -61,8 +61,8 @@ it looks like only the ship and sun will be drawn.
 
 ## Setting up your own celestial navigation scenario
 
-Simulating a sight-reduction, requires three items: (lat,lng) of the AP, (declination,GHA) of the Sun's GP, and the altitude of the Sun you'd measure
-from your ship.  These are held as global variables at the top of the code as in this block:
+Simulating a sight-reduction, requires three items: (lat,lng) of the AP, (declination,GHA) of the Sun's GP, and the altitude of the Sun that you'd would be
+measured from the ship.  These are held as global variables at the top of the code as in this block:
 
 ```javascript
         var ship_lat, ship_lng;     // position of the ship
