@@ -108,7 +108,7 @@ These points are equidistant from the (lat,lng) in ```intercept_lat_lng```.
 
 * Shortest distance from the ship to the LOP in ```ship_lop_dist```.
 
-All quantities computed by ```do_calc()``` are available for use as global variables. Here they are, as declared in the code:
+All quantities computed by ```do_calc()``` are now available for use as global variables. Here they are, as declared in the code:
 
 ```javascript
         var A, B, b, C, c;                  // Navigation triangle for the AP
