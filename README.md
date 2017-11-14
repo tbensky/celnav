@@ -44,7 +44,7 @@ and looks like this
                 //comment out what you don't want to draw
                 //
                 //draw_ap_balloon();        // Draw a balloon at the AP
-                //draw_co_Hc();               // Draw AP-to-sun connectors
+                //draw_co_Hc();               // Draw AP-to-sun connectors 
                 //draw_intercept();           // Draw intercept (corrections to calculated vs. observed delta H's)
                 //draw_lop();               // Draw a line of position
                 //draw_ap_dot();            // Draw a small dot at the AP
@@ -108,6 +108,20 @@ These points are equidistant from the (lat,lng) in ```intercept_lat_lng```.
 
 * Shortest distance from the ship to the LOP in ```ship_lop_dist```.
 
+All quantities computed by ```do_calc()``` are available for use as global variables. Here they are, as declared in the code:
+
+```javascript
+        var A, B, b, C, c;                  // Navigation triangle for the AP
+        var Aship, bship, Cship, cship;     // Navigation triangle for the ship
+        var intercept_lat_lng;              // Intercept point, toward or away from the GP along the AP-GP connector
+        var lop1, lop2;                     // Endpoints of the LOP
+        var coalt;                          // 90 - alt
+        var Hc;                             // 90 - C from APs computed navigation triangle  (the 'computed' H)
+        var Ho;                             // = alt (the 'observed' H).
+        var dH;                             // intercept distance
+        var ship_lop_dist;                  // closest resulting ship-to-LOP distance.
+```
+
 Next, decide what you you want to plot on the map.  The totality of pre-defined drawing capabilities are in the function called ```render_all()``` (above). So
 here is a code-set that would set up the key variables, run the calculations, the plot the ship, AP, intercept distance, and line of position.  We also
 center the map on the ship, and set the zoom level to 6.  
@@ -139,8 +153,15 @@ center the map on the ship, and set the zoom level to 6.
     console.log(dH);
 ```
 
-Opening the Javascript console will reveal a 16.93, which is the Nautical Miles between the ship and LOP. You'll
-see the (lat,lng) of the intercept is (28,-159.9) and the intercept distance, dH is -6.28.
+The last 3 lines, containing the ```console.log()``` statements will
+output text to the Javascript console (they like ```print``` or
+```write``` statements in other languages).  Here we output the eventual
+ship-to-lop distance, the intercept coordinates, and the difference between
+the observed (from the ship) and computed (from the AP) intercept distances.  
+
+Opening the Javascript console in this case will reveal a 16.93, which is the Nautical Miles
+between the ship and LOP. You'll see the (lat,lng) of the intercept is
+(28,-159.9) and the intercept distance, dH is -6.28.
 
 
   
