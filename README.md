@@ -154,14 +154,14 @@ center the map on the ship, and set the zoom level to 6.
 ```
 
 The last 3 lines, containing the ```console.log()``` statements will
-output text to the Javascript console (they like ```print``` or
+output text to the Javascript console (they are like ```print``` or
 ```write``` statements in other languages).  Here we output the eventual
 ship-to-lop distance, the intercept coordinates, and the difference between
 the observed (from the ship) and computed (from the AP) intercept distances.  
 
 Opening the Javascript console in this case will reveal a 16.93, which is the Nautical Miles
 between the ship and LOP. You'll see the (lat,lng) of the intercept is
-(28,-159.9) and the intercept distance, dH is -6.28.
+(28,-159.9) and the difference between ```Hc``` and ```Ho``` (```dH```) is -6.28.
 
 
   
