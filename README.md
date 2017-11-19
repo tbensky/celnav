@@ -98,7 +98,7 @@ With these variables defined, do a call to a function called ```do_calcs()```. T
 * The navigation triangle for the ship (supposedly, the observed altitude could come from this--we just always used the online calculator). See Fig 3 in the
 paper. Results are available in variables ```Aship```, ```bship```, ```Cship```, and ```cship```.
 
-* The intercept distance, ```dH```.
+* The altitude intercept, ```dH```.
 
 * (lat,lng) of the intercept point (towards or away from the GP, relative to the AP). This is available in the object ```intercept_lat_lng``` or as scalars
 in ```intercept_lat_lng.lng()``` and ```intercept_lat_lng.lat()```. This is the center point of the LOP.
@@ -116,9 +116,9 @@ All quantities computed by ```do_calc()``` are now available for use as global v
         var intercept_lat_lng;              // Intercept point, toward or away from the GP along the AP-GP connector
         var lop1, lop2;                     // Endpoints of the LOP
         var coalt;                          // 90 - alt
-        var Hc;                             // 90 - C from APs computed navigation triangle  (the 'computed' H)
-        var Ho;                             // = alt (the 'observed' H).
-        var dH;                             // intercept distance
+        var Hc;                             // 90 - C from APs computed navigation triangle (i.e. the altitude computed from the AP)
+        var Ho;                             // = alt (i.e. the altitude observed from the ship).
+        var dH;                             // altitude intercept
         var ship_lop_dist;                  // closest resulting ship-to-LOP distance.
 ```
 
