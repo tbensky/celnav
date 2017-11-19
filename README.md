@@ -45,7 +45,7 @@ and looks like this
                 //
                 //draw_ap_balloon();        // Draw a balloon at the AP
                 //draw_co_Hc();               // Draw AP-to-sun connectors 
-                //draw_intercept();           // Draw intercept (corrections to calculated vs. observed delta H's)
+                //draw_intercept();           // Draw intercept (difference between Hc and Ho (computed vs. observed altitudes) )
                 //draw_lop();               // Draw a line of position
                 //draw_ap_dot();            // Draw a small dot at the AP
                 //draw_cop();               // Draw a circle of position
