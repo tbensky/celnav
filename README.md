@@ -59,6 +59,17 @@ and looks like this
 To control what is drawn, you basically uncomment what you want to draw and comment what you don't want to draw. Above,
 it looks like only the ship and sun will be drawn.
 
+## Live figures from the paper
+
+<ul>
+
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig01.html>Fig. 1</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig02a.html>Fig. 2a</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig02b.html>Fig. 2b</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig04.html>Fig. 4</a>
+
+</ul>
+
 ## Setting up your own celestial navigation scenario
 
 Simulating a sight-reduction, requires three items: (lat,lng) of the AP, (declination,GHA) of the Sun's GP, and the altitude of the Sun that would be
