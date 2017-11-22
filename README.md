@@ -25,7 +25,22 @@ You should see a map of a ship and the Sun, near the Hawaiian islands.
 5. If nothing happens in your browser, check your Javascript error console. You might have to hit 'reload' again, or your browser, or
 maybe your Google Maps API key is wrong, etc.
 
-## Making the figures found in the paper 
+
+## Live figures from the paper
+
+<ul>
+
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig01.html>Fig. 1</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig02a.html>Fig. 2a</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig02b.html>Fig. 2b</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig04.html>Fig. 4</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig05.html>Fig. 5</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig06.html>Fig. 6</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig07.html>Fig. 7</a>
+</ul>
+
+
+## Start here: Making the figures found in the paper 
 
 Probably the best way to get started with the code is to make it reproduce the figures found in the paper.
 
@@ -59,18 +74,7 @@ and looks like this
 To control what is drawn, you basically uncomment what you want to draw and comment what you don't want to draw. Above,
 it looks like only the ship and sun will be drawn.
 
-## Live figures from the paper
 
-<ul>
-
-<li> <a href=https://tbensky.github.io/celnav/celnav_fig01.html>Fig. 1</a>
-<li> <a href=https://tbensky.github.io/celnav/celnav_fig02a.html>Fig. 2a</a>
-<li> <a href=https://tbensky.github.io/celnav/celnav_fig02b.html>Fig. 2b</a>
-<li> <a href=https://tbensky.github.io/celnav/celnav_fig04.html>Fig. 4</a>
-<li> <a href=https://tbensky.github.io/celnav/celnav_fig05.html>Fig. 5</a>
-<li> <a href=https://tbensky.github.io/celnav/celnav_fig06.html>Fig. 6</a>
-<li> <a href=https://tbensky.github.io/celnav/celnav_fig07.html>Fig. 7</a>
-</ul>
 
 ## Setting up your own celestial navigation scenario
 
