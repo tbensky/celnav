@@ -22,7 +22,7 @@ long `<script async defer src="https://maps.googleapis.....>` line.
 
 You should see a map of a ship and the Sun, near the Hawaiian islands.
 
-5. If nothing happens in your browser, check your Javascript error console. You might have to hit 'reload' again, or your browser, or
+5. If nothing happens in your browser, check your Javascript error console. You might have to hit 'reload' again (and again) in your browser, or
 maybe your Google Maps API key is wrong, etc.
 
 
