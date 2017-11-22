@@ -69,7 +69,7 @@ it looks like only the ship and sun will be drawn.
 <li> <a href=https://tbensky.github.io/celnav/celnav_fig04.html>Fig. 4</a>
 <li> <a href=https://tbensky.github.io/celnav/celnav_fig05.html>Fig. 5</a>
 <li> <a href=https://tbensky.github.io/celnav/celnav_fig06.html>Fig. 6</a>
-
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig07.html>Fig. 7</a>
 </ul>
 
 ## Setting up your own celestial navigation scenario
