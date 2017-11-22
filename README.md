@@ -67,6 +67,7 @@ it looks like only the ship and sun will be drawn.
 <li> <a href=https://tbensky.github.io/celnav/celnav_fig02a.html>Fig. 2a</a>
 <li> <a href=https://tbensky.github.io/celnav/celnav_fig02b.html>Fig. 2b</a>
 <li> <a href=https://tbensky.github.io/celnav/celnav_fig04.html>Fig. 4</a>
+<li> <a href=https://tbensky.github.io/celnav/celnav_fig05html>Fig. 5</a>
 
 </ul>
 
