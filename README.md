@@ -46,7 +46,7 @@ Here are live Javascript pages that render the figures found in the paper.
 
 Probably the best way to get started with the code is to see how it generates the figures found in the paper.
 
-To do so, scroll down to line 775 or so, the one containing the text 'START HERE.' There you'll see a whole slew
+To do so, scroll down to line 775 (or so) in celnav.html, the one containing the text 'START HERE.' There you'll see a whole slew
 of comments on how each figure was generated. 
 
 Try to at least glance at the function ``render_all()``.  It is the main function called
