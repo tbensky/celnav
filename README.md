@@ -44,7 +44,7 @@ Here are live Javascript pages that render the figures found in the paper.
 
 ## Start here: Making the figures found in the paper 
 
-Probably the best way to get started with the code is to make it reproduce the figures found in the paper.
+Probably the best way to get started with the code is to see how it generates the figures found in the paper.
 
 To do so, scroll down to line 775 or so, the one containing the text 'START HERE.' There you'll see a whole slew
 of comments on how each figure was generated. 
