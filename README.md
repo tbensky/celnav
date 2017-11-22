@@ -28,6 +28,8 @@ maybe your Google Maps API key is wrong, etc.
 
 ## Live figures from the paper
 
+Here are live Javascript pages that render the figures found in the paper.
+
 <ul>
 
 <li> <a href=https://tbensky.github.io/celnav/celnav_fig01.html>Fig. 1</a>
