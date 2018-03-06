@@ -191,7 +191,9 @@ a line of position.
 
 In the page below, I have Small's Lighthouse plotted, and St. Hilaire's likely
 circle of position, with the Sun's GP way down on the tip of Africa. I think
-the Sun's GP on 12/17/1837 at 10:15am was (-23.33S,29E).
+the Sun's GP on 12/17/1837 at 10:15am was (23.33S,29E). The altitude was 10.04 deg.,
+althought 8.88 deg puts the circle of position right through the lighthouse,
+as per St. Hilaire's log.
 
 <ul>
 
