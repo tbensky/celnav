@@ -182,6 +182,23 @@ Opening the Javascript console in this case will reveal a 16.93, which is the Na
 between the ship and LOP. You'll see the (lat,lng) of the intercept is
 (28,-159.9) and the difference between ```Hc``` and ```Ho``` (```dH```) is -6.28.
 
+## St. Hilaire's journey (12/17/1837 @ 10:15am)
+
+(Slowly) working to use this framework to re-create St. Hilaire's journey from
+South Carolina to Greenock, Scotland. His navigation showed us (for the
+first time), the utility of approximating a circle of position with
+a line of position.
+
+In the page below, I have Small's Lighthouse plotted, and St. Hilaire's likely
+circle of position, with the Sun's GP way down on the tip of Africa. I think
+the Sun's GP on 12/17/1837 at 10:15am was (-23.33S,29E).
+
+<ul>
+
+<li> <a href=https://tbensky.github.io/celnav/celnav_st_hilaire.html>St. Hilaire</a>
+
+</ul>
+
 
   
 
